@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate='1'>
+        <record id="openacademy_instructor_steve_jobs" model="res.partner">
+            <field name="name">Steve Jobs</field>
+            <field name="is_instructor" eval="True"/>
+            <field name="category_id" eval="[(4, ref('partner_tag_teacher'))]"/>
+        </record>
+
+        <record id="openacademy_instructor_bill_gates" model="res.partner">
+            <field name="name">Bill Gates</field>
+            <field name="is_instructor" eval="True"/>
+            <field name="category_id" eval="[(4, ref('partner_tag_teacher'))]"/>
+        </record>
+
+        <record id="openacademy_instructor_linus_torvalds" model="res.partner">
+            <field name="name">Linus Torvalds</field>
+            <field name="is_instructor" eval="True"/>
+            <field name="category_id" eval="[(4, ref('partner_tag_teacher'))]"/>
+        </record>
+
+        <record id="openacademy_instructor_martin_fowler" model="res.partner">
+            <field name="name">Martin Fowler</field>
+            <field name="is_instructor" eval="True"/>
+            <field name="category_id" eval="[(4, ref('partner_tag_teacher'))]"/>
+        </record>
+
+        <record id="openacademy_instructor_sid_meier" model="res.partner">
+            <field name="name">Sid Meier</field>
+            <field name="is_instructor" eval="True"/>
+            <field name="category_id" eval="[(4, ref('partner_tag_teacher'))]"/>
+        </record>
+    </data>
+</odoo>

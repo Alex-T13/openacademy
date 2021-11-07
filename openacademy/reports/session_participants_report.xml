@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="session_participants_report" model="ir.actions.report">
+            <field name="name">Session Participants</field>
+            <field name="model">openacademy.session</field>
+            <field name="report_type">qweb-pdf</field> <!--qweb-html-->
+            <field name="report_name">openacademy.session_participants_template</field>
+            <field name="binding_model_id" ref="model_openacademy_session"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <template id="session_participants_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="session"> <!-- for doc in docs -->
+                    <t t-call="web.internal_layout">
+                        <div class="page">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <h1>Session: <t t-esc="session.course_id.title"/></h1>
+                                    <br/>
+                                    <div class="row">
+                                        <dt class="col-2">Course: </dt>
+                                        <dd class="col-10"><t t-esc="session.course_id.title"/></dd>
+                                    </div>
+                                    <div class="row">
+                                        <dt class="col-2">Instructor: </dt>
+                                        <dd class="col-10">
+                                            <t t-esc="session.instructor_id.name"/>
+                                            <img
+                                                t-attf-src="data:image/*;base64,{{session.instructor_id.image_1920}}"
+                                                t-att-alt="session.instructor_id.name"
+                                            />
+                                        </dd>
+                                    </div>                            
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="row">
+                                <div class="col-sm-12"><h3>Participants:</h3><hr/></div>
+                            </div>
+
+                            <table class="table table-borderless">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th scope="col" class="text-center align-middle">ID</th>
+                                        <th scope="col" class="text-center align-middle">Name</th>
+                                        <th scope="col" class="text-center align-middle">Phone</th>
+                                        <th scope="col" class="text-center align-middle">Email</th>
+                                        <th scope="col" class="text-center align-middle">Photo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="session.attendee_ids" t-as="attendee">
+                                        <th scope="row" class="text-center"><t t-esc="attendee.id"/></th>
+                                        <td class="text-center"><t t-esc="attendee.name"/></td>
+                                        <td class="text-center"><t t-esc="attendee.phone"/></td>
+                                        <td class="text-center"><t t-esc="attendee.email"/></td>
+                                        <td class="text-center">
+                                            <img
+                                                t-attf-src="data:image/*;base64,{{attendee.image_1920}}"
+                                                t-att-alt="attendee.name"
+                                            />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record model="ir.rule" id="openacademy_course_user_rule">
+            <field name="name">Openacademy: only those responsible can modify courses</field>
+            <field name="model_id" ref="model_openacademy_course"/>
+            <field name="groups" eval="[(4, ref('openacademy.openacademy_user_group'))]"/>
+            <!-- These fields can be used to specify operations to apply domain -->
+            <field name="perm_read" eval="0"/> 
+            <field name="perm_write" eval="1"/>   <!-- "1" - add restrictions on rights -->
+            <field name="perm_create" eval="0"/>   <!-- "0" - no add restrictions on rights -->
+            <field name="perm_unlink" eval="1"/>
+            <field name="domain_force">['|', ('responsible_id', '=', user.id),('responsible_id', '=', False)]</field>
+        </record>
+
+        <record model="ir.rule" id="openacademy_course_all_rule">
+            <field name="name">Openacademy: can modify courses</field>
+            <field name="model_id" ref="model_openacademy_course"/>
+            <field name="groups" eval="[(4, ref('openacademy.openacademy_manager_group'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+    </data>
+</odoo>

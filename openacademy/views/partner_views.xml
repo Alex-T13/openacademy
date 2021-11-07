@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- View -->
+        <record id="instructor_session_view_tree" model="ir.ui.view">
+            <field name="name">Instructor List</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="category_id"/>
+                    <field name="instructed_session_ids"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Mixin Views in res_partners-->
+        <record id="res_partner_session_view_form" model="ir.ui.view">
+            <field name="name">Attendee Form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page string="Sessions">
+                        <group>
+                            <field name="session_ids" attrs="{'invisible':[('is_instructor', '=', True)]}"/>
+                            <field name="instructed_session_ids" attrs="{'invisible':[('is_instructor', '!=', True)]}"/>
+                        </group>
+                    </page>
+                </xpath>
+                <field name="vat" position="after">
+                    <field name="is_instructor"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- Mixin Views in openacademy-->
+        <record id="session_attendee_view_form" model="ir.ui.view">
+            <field name="name">Attendee Form</field>
+            <field name="model">openacademy.session</field>
+            <field name="inherit_id" ref="openacademy.session_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet/group[last()]" position="after">
+                    <notebook>
+                        <page string="Attendees">
+                            <group>
+                                <field name="attendee_ids" widget="many2many_tags"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Actions -->
+        <record id="attendee_session_list_action" model="ir.actions.act_window">
+            <field name="name">Attendee</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('is_instructor', '=', False), ('is_company', '=', False)]</field>
+        </record>
+
+        <record id="instructor_session_list_action" model="ir.actions.act_window">
+            <field name="name">Instructors</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="instructor_session_view_tree"/>
+            <field name="domain">[('is_instructor', '=', True), ('is_company', '=', False)]</field>
+        </record>
+
+        <record id="contact_tags_list_action" model="ir.actions.act_window">
+            <field name="name">Contact Tags</field>
+            <field name="res_model">res.partner.category</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Menus -->
+        <menuitem id="openacademy_attendees_menu" name="Attendees" parent="openacademy_base_menu"/>
+        <menuitem id="attendees_menu_action" name="Attendees" parent="openacademy_attendees_menu" action="attendee_session_list_action"/>
+
+        <menuitem id="instructors_menu_action" name="Instructors" parent="openacademy_courses_menu" action="instructor_session_list_action"/>
+
+        <menuitem id="openacademy_contact_tags" name="Contact Tags" parent="openacademy_base_menu"/>
+        <menuitem id="contact_tags_action" name="Contact Tags" parent="openacademy_contact_tags" action="contact_tags_list_action"/>
+    </data>
+</odoo>

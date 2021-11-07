@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="openacademy_session_c_1" model="openacademy.session">
+            <field name="course_id" ref="openacademy_course_c"/>
+            <field name="start_date">2021-10-10</field>
+            <field name="seats">15</field>
+            <field name="duration">30</field>
+            <field name="instructor_id" ref="openacademy_instructor_steve_jobs"/>
+        </record>
+
+        <record id="openacademy_session_c_2" model="openacademy.session">
+            <field name="course_id" ref="openacademy_course_c"/>
+            <field name="start_date">2021-11-12</field>
+            <field name="seats">25</field>
+            <field name="duration">30</field>
+            <field name="instructor_id" ref="openacademy_instructor_steve_jobs"/>
+        </record>
+
+        <record id="openacademy_session_python_1" model="openacademy.session">
+            <field name="course_id" ref="openacademy_course_python"/>
+            <field name="start_date">2021-10-20</field>
+            <field name="seats">13</field>
+            <field name="duration">25</field>
+            <field name="instructor_id" ref="openacademy_instructor_bill_gates"/>
+        </record>
+
+        <record id="openacademy_session_python_2" model="openacademy.session">
+            <field name="course_id" ref="openacademy_course_python"/>
+            <field name="start_date">2021-11-20</field>
+            <field name="seats">17</field>
+            <field name="duration">25</field>
+            <field name="instructor_id" ref="openacademy_instructor_bill_gates"/>
+        </record>
+
+        <record id="openacademy_session_ruby_1" model="openacademy.session">
+            <field name="course_id" ref="openacademy_course_ruby"/>
+            <field name="start_date">2021-10-29</field>
+            <field name="seats">21</field>
+            <field name="duration">20</field>
+            <field name="instructor_id" ref="openacademy_instructor_linus_torvalds"/>
+        </record>
+
+        <record id="openacademy_session_ruby_2" model="openacademy.session">
+            <field name="course_id" ref="openacademy_course_ruby"/>
+            <field name="start_date">2021-11-25</field>
+            <field name="seats">25</field>
+            <field name="duration">20</field>
+            <field name="instructor_id" ref="openacademy_instructor_linus_torvalds"/>
+        </record>
+
+        <record id="openacademy_session_scala_1" model="openacademy.session">
+            <field name="course_id" ref="openacademy_course_scala"/>
+            <field name="start_date">2021-11-05</field>
+            <field name="seats">18</field>
+            <field name="duration">30</field>
+            <field name="instructor_id" ref="openacademy_instructor_martin_fowler"/>
+        </record>
+
+        <record id="openacademy_session_scala_2" model="openacademy.session">
+            <field name="course_id" ref="openacademy_course_scala"/>
+            <field name="start_date">2021-12-07</field>
+            <field name="seats">20</field>
+            <field name="duration">30</field>
+            <field name="instructor_id" ref="openacademy_instructor_martin_fowler"/>
+        </record>
+
+        <record id="openacademy_session_php_1" model="openacademy.session">
+            <field name="course_id" ref="openacademy_course_php"/>
+            <field name="start_date">2021-11-10</field>
+            <field name="seats">10</field>
+            <field name="duration">4</field>
+            <field name="instructor_id" ref="openacademy_instructor_sid_meier"/>
+        </record>
+
+        <record id="openacademy_session_php_2" model="openacademy.session">
+            <field name="course_id" ref="openacademy_course_php"/>
+            <field name="start_date">2021-11-21</field>
+            <field name="seats">10</field>
+            <field name="duration">7</field>
+            <field name="instructor_id" ref="openacademy_instructor_sid_meier"/>
+        </record>
+    </data>
+</odoo>

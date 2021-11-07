@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Views -->
+        <record id="course_view_tree" model="ir.ui.view">
+            <field name="name">Course List</field>
+            <field name="model">openacademy.course</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="title"/>
+                    <field name="active"/>
+                    <field name="description"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="course_view_form" model="ir.ui.view">
+            <field name="name">Course Form</field>
+            <field name="model">openacademy.course</field>
+            <field name="arch" type="xml">
+                <form string="Course Form">
+                    <header>
+                        <button name="move_to_archive" string="Move to Archive" type="object" attrs="{'invisible':[('active', '!=', True)]}"/>
+                        <button name="restore_from_archive" string="Restore from Archive" type="object" attrs="{'invisible':[('active', '=', True)]}"/>
+                        <field name="state" widget="statusbar" />
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="title"/>
+                            </group>
+                            <group>
+                                <field name="active"/>
+                                <field name="responsible_id"/>
+                            </group>
+                        </group>    
+                        <notebook>
+                            <page string="Description">
+                                <group>
+                                    <field name="description"/>
+                                </group>
+                            </page>
+                            <page string="Sessions">
+                                <group>
+                                    <field name="session_ids"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="course_view_search" model="ir.ui.view">
+            <field name="name">Course Search</field>
+            <field name="model">openacademy.course</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="title"/>
+                    <field name="description"/>
+                    <filter string="No Session" name="without_sessions" domain="[('session_ids', '=', False)]"/>
+                    <separator/>
+                    <filter string="My Courses" name="my_courses" domain="[('responsible_id', '=', uid)]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Responsible" name="responsible" context="{'group_by':'responsible_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Actions -->
+        <record id="course_list_action" model="ir.actions.act_window">
+            <field name="name">Course</field>
+            <field name="res_model">openacademy.course</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{"active_test": False, "search_default_my_courses": 1}</field>
+        </record>
+
+        <!-- Menus -->
+        <menuitem id="openacademy_base_menu" name="Open Academy"/>
+        <menuitem id="openacademy_courses_menu" name="Courses" parent="openacademy_base_menu"/>
+        <menuitem id="courses_menu_action" name="Courses" parent="openacademy_courses_menu" action="course_list_action" sequence="2"/>
+    </data>
+</odoo>

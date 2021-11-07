@@ -1,0 +1,58 @@
+stages:
+    - lint
+    - build
+    - test
+
+variables:
+    GIT_SUBMODULE_STRATEGY: recursive
+    IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+
+lint:
+    image: registry.ventor.tech/docker/odoo-lint:14.0
+    stage: lint
+    variables:
+        LINT_CHECK: "1"
+        ODOO_LINT: "1"
+        TESTS: "0"
+        PHANTOMJS_TESTS: "0"
+    before_script:
+        - sed -i -E 's/max-line-length.*/max-line-length = 100/' ~/maintainer-quality-tools/travis/cfg/travis_run_flake8.cfg
+        - sed -i '/javascript-lint/d' ~/maintainer-quality-tools/travis/cfg/travis_run_pylint_beta.cfg
+    script:
+        - odoo-lint
+    except:
+        - develop
+
+build:
+    image: docker:stable
+    services:
+        - docker:dind
+    before_script:
+        - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    stage: build
+    script:
+        - docker build --build-arg CI_JOB_TOKEN -t $IMAGE_TAG . # passing env to download ext-addons
+        - docker push $IMAGE_TAG
+    except:
+        - develop
+
+test:
+    image: $IMAGE_TAG
+    services:
+        - name: postgres:10
+          alias: db
+    variables:
+        POSTGRES_DB: odoo
+        POSTGRES_USER: odoo
+        POSTGRES_PASSWORD: "odoo"
+    stage: test
+    before_script:
+        - export PATH=$PATH:~/.local/bin
+        - pip3 install --user pytest==5.4.3 pytest-odoo==0.5.0
+    script:
+        - odoo -c /etc/odoo/odoo.conf --db_host=db --db_user=odoo --db_password="odoo" -d odoo -i openacademy --stop-after-init
+        # TODO: investigate warnings
+        - PGPASSWORD=odoo PGHOST=db PGUSER=odoo pytest --disable-pytest-warnings --odoo-database=odoo /addons
+    except:
+        - develop
+
