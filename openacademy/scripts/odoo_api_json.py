@@ -1,4 +1,6 @@
 import random
+from typing import Optional
+
 import requests
 import json
 
@@ -22,8 +24,8 @@ parser.add_argument(
 )
 parser.add_argument(
     "-sd", "--start_date",
-    type=date, default=date.today(),
-    help="start date of session (default - today)",
+    type=str, default=date.today().strftime('%Y-%m-%d'),
+    help="start date of session ('YYYY-MM-DD')(default - today)",
 )
 parser.add_argument("-s", "--seats", type=int, default=10, help="seats of session (default=10)")
 args = parser.parse_args()
@@ -37,7 +39,7 @@ class CreateSessions:
         self._password = args.password
         self.uid = self._auth_uid()
         self.number_of_sessions = args.number_of_sessions
-        self.start_date = args.start_date
+        self.start_date = datetime.strptime(args.start_date, '%Y-%m-%d')
         self.seats = args.seats
     
     def json_rpc(self, method, params):
@@ -68,11 +70,11 @@ class CreateSessions:
         return self.json_rpc('call', params=params)
 
     def _auth_uid(self):
-        args = (self.db, self.user, self._password)
+        uid_args = (self.db, self.user, self._password)
         params = {
             'service': 'common',   # common or object
             'method': 'login',   # execute_kw / login /
-            'args': args,
+            'args': uid_args,
         }
         uid = self.json_rpc('call', params=params)
         if not uid:
@@ -109,7 +111,7 @@ class CreateSessions:
             [[['course_id', '=', course_id]]],
         )
         if not same_session:
-            return False
+            same_session = []
         return same_session
 
     def check_start_date(self):
@@ -131,21 +133,20 @@ class CreateSessions:
                     date_list.append(item['start_date'])
                 return date_list
 
-    def create_sessions(self):
+    def create_sessions(self) -> Optional[str]:
         number_of_sessions = self.number_of_sessions
         start_date = self.start_date
+        list_start_date = self.check_start_date() if self.check_start_date() else []
+        new_sessions_id = None
         while number_of_sessions > 0:
-            while str(start_date) in self.check_start_date():   # exclude start_date matches
+            while start_date.strftime('%Y-%m-%d') in list_start_date:   # exclude start_date matches
                 start_date += timedelta(days=1)
-            # if len(self.is_same_session()) >= 30:
-            #     raise AttributeError(
-            #         "Limit is exceeded! You can no longer create sessions for this course."
-            #     )
+
             new_sessions_id = self.call(
                 'object', 'execute_kw',
                 'openacademy.session', 'create',
                 [{
-                    'start_date': str(start_date),
+                    'start_date': start_date.strftime('%Y-%m-%d'),
                     'seats': self.seats,
                     'duration': 10,
                     'course_id': self.course_id()[0],
@@ -154,7 +155,7 @@ class CreateSessions:
             )
             start_date += timedelta(days=36)
             number_of_sessions -= 1
-            print(f"Create session {new_sessions_id} sucsefull!")
+            print(f"Create session {new_sessions_id} successful!")
         return new_sessions_id
 
 
