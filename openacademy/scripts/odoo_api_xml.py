@@ -2,6 +2,7 @@ import datetime
 import xmlrpc.client as xmlrpclib
 import random
 import argparse
+
 from datetime import date, timedelta, datetime
 from typing import Union, List, Optional
 
@@ -107,14 +108,13 @@ class CreateSessions:
         list_start_date = self.check_start_date() if self.check_start_date() else []
         new_weekly_sessions_id = None
         while number_of_sessions > 0:
-
-            print(f"type(start_date): {type(start_date)}")
             while start_date.strftime('%Y-%m-%d') in list_start_date:   # exclude start_date matches  str(start_date)
                 start_date += timedelta(days=1)
             if len(self.is_same_session()) >= 30:
                 raise AttributeError(
                     "Limit is exceeded! You can no longer create sessions for this course."
                 )
+
             new_weekly_sessions_id = self.models.execute_kw(
                 self.db, self.uid, self._password,
                 'openacademy.session', 'create',
@@ -134,9 +134,8 @@ class CreateSessions:
 
 if __name__ == "__main__":
     create_sessions = CreateSessions()
-    print(f"instructor_ids: {create_sessions.instructor_ids()}")
-    print(f"course_id: {create_sessions.course_id()}")
-    print(f"is_same_session: {create_sessions.is_same_session()}")
-    print(f"check_start_date: {create_sessions.check_start_date()}")
-
+    # print(f"instructor_ids: {create_sessions.instructor_ids()}")
+    # print(f"course_id: {create_sessions.course_id()}")
+    # print(f"is_same_session: {create_sessions.is_same_session()}")
+    # print(f"check_start_date: {create_sessions.check_start_date()}")
     create_sessions.create_weekly_sessions()

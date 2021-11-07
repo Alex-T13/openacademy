@@ -1,10 +1,9 @@
 import random
-from typing import Optional
-
 import requests
 import json
 
 import argparse
+from typing import Optional, Union, List
 from datetime import date, datetime, timedelta
 
 
@@ -28,28 +27,28 @@ parser.add_argument(
     help="start date of session ('YYYY-MM-DD')(default - today)",
 )
 parser.add_argument("-s", "--seats", type=int, default=10, help="seats of session (default=10)")
-args = parser.parse_args()
+cmd_args = parser.parse_args()
 
 
 class CreateSessions:
     def __init__(self):
-        self.url = args.url
-        self.db = args.db
-        self.user = args.user
-        self._password = args.password
+        self.url = cmd_args.url
+        self.db = cmd_args.db
+        self.user = cmd_args.user
+        self._password = cmd_args.password
         self.uid = self._auth_uid()
-        self.number_of_sessions = args.number_of_sessions
-        self.start_date = datetime.strptime(args.start_date, '%Y-%m-%d')
-        self.seats = args.seats
+        self.number_of_sessions = cmd_args.number_of_sessions
+        self.start_date = datetime.strptime(cmd_args.start_date, '%Y-%m-%d')
+        self.seats = cmd_args.seats
     
     def json_rpc(self, method, params):
         headers = {'content-type': 'application/json'}
-        id = int(round(datetime.now().timestamp()))
+        re_id = int(round(datetime.now().timestamp()))
         payload = {
             'jsonrpc': '2.0',
             'method': method,
             'params': params,
-            'id': id,
+            'id': re_id,
         }
 
         response = requests.post(self.url, data=json.dumps(payload), headers=headers)
@@ -69,7 +68,7 @@ class CreateSessions:
         
         return self.json_rpc('call', params=params)
 
-    def _auth_uid(self):
+    def _auth_uid(self) -> str:
         uid_args = (self.db, self.user, self._password)
         params = {
             'service': 'common',   # common or object
@@ -81,7 +80,7 @@ class CreateSessions:
             raise AttributeError("Invalid authentication parameters!")
         return uid
 
-    def instructor_ids(self):
+    def instructor_ids(self) -> Union[bool, List[str]]:
         instructor_ids = self.call(
             'object', 'execute_kw',
             'res.partner', 'search',
@@ -91,7 +90,7 @@ class CreateSessions:
             return instructor_ids
         return False
 
-    def course_id(self):
+    def course_id(self) -> Union[bool, List[str]]:
         course_id = self.call(
             'object', 'execute_kw',
             'openacademy.course', 'search',
@@ -101,7 +100,7 @@ class CreateSessions:
             return course_id
         return False
 
-    def is_same_session(self):
+    def is_same_session(self) -> List[str]:
         course_id = self.course_id()[0]
         if not course_id:
             raise AttributeError("Course with the same name is not registered!")
@@ -114,7 +113,7 @@ class CreateSessions:
             same_session = []
         return same_session
 
-    def check_start_date(self):
+    def check_start_date(self) -> Union[bool, str, List[str]]:
         date_list = []
         same_session = self.is_same_session()
         if not same_session:
@@ -161,33 +160,8 @@ class CreateSessions:
 
 if __name__ == "__main__":
     create_sessions = CreateSessions()
-    print(f"uid: {create_sessions.uid}")
-    print(f"instructor_ids(): {create_sessions.instructor_ids()}")
-    print(f"course_id(): {create_sessions.course_id()}")
-    print(f"is_same_session: {create_sessions.is_same_session()}")
+    # print(f"uid: {create_sessions.uid}")
+    # print(f"instructor_ids(): {create_sessions.instructor_ids()}")
+    # print(f"course_id(): {create_sessions.course_id()}")
+    # print(f"is_same_session: {create_sessions.is_same_session()}")
     create_sessions.create_sessions()
-
-
-
-
-
-# >>> import json
-# >>> import base64
-# >>> d = {"alg": "ES256"} 
-# >>> s = json.dumps(d)  # Turns your json dict into a str
-# >>> print(s)
-# {"alg": "ES256"}
-# >>> type(s)
-# <class 'str'>
-# >>> base64.b64encode(s)
-# Traceback (most recent call last):
-#   File "<stdin>", line 1, in <module>
-#   File "/usr/lib/python3.2/base64.py", line 56, in b64encode
-#     raise TypeError("expected bytes, not %s" % s.__class__.__name__)
-# TypeError: expected bytes, not str
-# >>> base64.b64encode(s.encode('utf-8'))
-# b'eyJhbGciOiAiRVMyNTYifQ=='
-
-# data = '{"hello": "world"}'
-# enc = data.encode()  # utf-8 by default
-# print base64.encodestring(enc)
