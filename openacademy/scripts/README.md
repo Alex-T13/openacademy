@@ -21,17 +21,21 @@ optional arguments:
                         seats of session (default=10)
 
 An approximate algorithm for the script:
+
     • checking the entered parameters
     • user authentication (if the attempt fails, display a message in the console)
     • checking the availability of instructors (there must be at least one instructor)
     • checking the availability of such a course (by name)
     • checking for the presence of the same sessions (to control the uniqueness of 
 the start dates)
+
     • getting a list of start dates for sessions (for already created sessions with 
 the same name) to avoid duplication of start dates for new sessions with existing ones 
 (the start date must be at least one day different)
+
     • creating a new session or multiple sessions (depending on the entered parameters)
 and outputting success or error messages to the console.
+
 
 
 
@@ -61,6 +65,7 @@ The algorithm of this script is similar to the script ("odoo_api_json.py").
 
 
 
+
 The behavior and principle of the script ("odoo_api_create_instructor_json.py").
 This script is designed to create instructors for courses through the API. Instructors 
 should be created with a logo or photo. Script launch parameters:
@@ -83,6 +88,7 @@ optional arguments:
 
 
 An approximate algorithm for the script:
+
      • checking the entered parameters
      • user authentication (if the attempt is unsuccessful, print a message to the console)
      • getting an ID of the category "teacher"
