@@ -27,8 +27,10 @@ An approximate algorithm for the script:
     • checking the availability of instructors (there must be at least one instructor)
     • checking the availability of such a course (by name)
     • checking for the presence of the same sessions (to control the uniqueness of the start dates)
-    • getting a list of start dates for sessions (for already created sessions with the same name) to avoid duplication of start dates for new sessions with existing ones (the start date must be at least one day different)
-    • creating a new session or multiple sessions (depending on the entered parameters) and outputting success or error messages to the console.
+    • getting a list of start dates for sessions (for already created sessions with the same name) to avoid duplication
+    of start dates for new sessions with existing ones (the start date must be at least one day different)
+    • creating a new session or multiple sessions (depending on the entered parameters) and outputting success or error
+    messages to the console.
 
 
 
